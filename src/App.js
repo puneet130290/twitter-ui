@@ -1,6 +1,7 @@
 import React from 'react'
 import logo from './logo.svg'
 import './App.css'
+import './views/styles.css'
 
 import routes from './routes'
 
@@ -17,7 +18,7 @@ const { Header, Content, Sider } = Layout
 function App() {
   return (
     <Layout>
-      <Content>{routes()}</Content>
+      <Content style={{ height: '100vh' }}>{routes()}</Content>
     </Layout>
   )
 }
