@@ -1,90 +1,138 @@
-import React from 'react'
-import { HomeContainer } from '../theme'
-import { Tabs, List, Avatar } from 'antd'
+import React, { useState } from 'react'
+import { HomeContainer, TweetButton } from '../theme'
+import Loader from '../components/Loader'
+import { Modal, Tabs, List, Avatar, Input, Row, Col, Divider } from 'antd'
+import { useGetTweets, useGetUsers, useCreateTweet } from '../hooks/dataSource'
+import moment from 'moment'
 import {
   AppleOutlined,
   AndroidOutlined,
-  MessageOutlined,
+  MessageTwoTone,
   LikeOutlined,
   StarOutlined,
 } from '@ant-design/icons'
 
 const { TabPane } = Tabs
+const { TextArea } = Input
 
-const IconText = ({ icon, text }) => (
+const IconText = ({ icon, text, onClick }) => (
   <span>
     {React.createElement(icon, { style: { marginRight: 8 } })}
     {text}
   </span>
 )
 
-const listData = []
-for (let i = 0; i < 23; i++) {
-  listData.push({
-    href: 'http://ant.design',
-    title: `ant design part ${i}`,
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    description:
-      'Ant Design, a design language for background applications, is refined by Ant UED Team.',
-    content:
-      'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-  })
-}
-
-function FeedWall(props) {
+function UserList(props) {
+  const { loading, error, data } = useGetUsers()
+  if (loading) return <Loader />
+  if (error) return <p>error...</p>
+  const { users } = data
   return (
     <List
-      itemLayout="vertical"
-      size="large"
-      // pagination={{
-      //   onChange: page => {
-      //     console.log(page)
-      //   },
-      //   pageSize: 3,
-      // }}
-      dataSource={listData}
-      // footer={
-      //   <div>
-      //     <b>ant design</b> footer part
-      //   </div>
-      // }
+      itemLayout="horizontal"
+      dataSource={users}
       renderItem={item => (
-        <List.Item
-          key={item.title}
-          actions={[
-            <IconText
-              icon={StarOutlined}
-              text="156"
-              key="list-vertical-star-o"
-            />,
-            <IconText
-              icon={LikeOutlined}
-              text="156"
-              key="list-vertical-like-o"
-            />,
-            <IconText
-              icon={MessageOutlined}
-              text="2"
-              key="list-vertical-message"
-            />,
-          ]}
-          // extra={
-          //   <img
-          //     width={272}
-          //     alt="logo"
-          //     src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-          //   />
-          // }
-        >
+        <List.Item>
           <List.Item.Meta
-            avatar={<Avatar src={item.avatar} />}
-            title={<a href={item.href}>{item.title}</a>}
-            description={item.description}
+            avatar={
+              <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+            }
+            title={<a href="https://ant.design">{item.name}</a>}
+            description={`@${item.handle}`}
           />
-          {item.content}
         </List.Item>
       )}
     />
+  )
+}
+
+function FeedWall(props) {
+  const [visible, setVisibility] = useState(false)
+  const { loading, error, data } = useGetTweets()
+  console.log({ visible })
+
+  const handleOk = e => setVisibility(false)
+  const handleCancel = e => setVisibility(false)
+
+  if (loading) return <Loader />
+  if (error) return <p>error...</p>
+
+  const { tweets } = data
+  return (
+    <>
+      <Modal
+        title={null}
+        footer={null}
+        visible={visible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        bodyStyle={{ height: '240px' }}
+      >
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+      </Modal>
+      <List
+        itemLayout="vertical"
+        size="large"
+        dataSource={tweets}
+        renderItem={item => (
+          <List.Item
+            key={item.id}
+            actions={[
+              <span onClick={() => setVisibility(true)}>
+                <MessageTwoTone /> {'2'}
+              </span>,
+            ]}
+          >
+            <List.Item.Meta
+              avatar={
+                <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+              }
+              title={<a>Puneet Saini</a>}
+              description={item.content}
+            />
+            {item.content}
+          </List.Item>
+        )}
+      />
+    </>
+  )
+}
+
+function TweetArea(props) {
+  const [tweet, setTweet] = useState('')
+  const [saveTweet, { loading, error, data }] = useCreateTweet()
+  return (
+    <>
+      <Row>
+        <Col span="2">
+          <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+        </Col>
+        <Col>
+          <TextArea
+            value={tweet}
+            placeholder="What's happening..."
+            rows={4}
+            style={{ borderRadius: 8 }}
+            allowClear
+            onChange={e => setTweet(e.target.value)}
+          />
+        </Col>
+      </Row>
+      <div style={{ textAlign: 'right', paddingTop: 8 }}>
+        <TweetButton
+          disabled={!tweet}
+          loading={loading}
+          onClick={() =>
+            saveTweet({ userId: '5e74bf508f6867428974036a', content: tweet })
+          }
+          type="primary"
+        >
+          Tweet
+        </TweetButton>
+      </div>
+    </>
   )
 }
 
@@ -101,6 +149,8 @@ function HomeView(props) {
           }
           key="1"
         >
+          <TweetArea />
+          <Divider dashed />
           <FeedWall />
         </TabPane>
         <TabPane
@@ -112,7 +162,7 @@ function HomeView(props) {
           }
           key="2"
         >
-          Tab 2
+          <UserList />
         </TabPane>
       </Tabs>
     </HomeContainer>

@@ -32,6 +32,12 @@ export const TwButton = styled(Button)`
   height: 40px;
 `
 
-export const HomeContainer = styled.div`
+export const TweetButton = styled(TwButton)`
+  font-weight: bold;
+`
+
+export const HomeContainer = styled(Card)`
   width: 100%;
+  border-radius: 24px;
+  margin: 32px 0;
 `
