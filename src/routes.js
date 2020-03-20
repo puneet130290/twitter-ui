@@ -5,6 +5,7 @@ import * as ROUTES from './resources/routeNames'
 
 import LoginView from './views/LoginView'
 import HomeView from './views/HomeView'
+import SignupView from './views/SignupView'
 
 const routes = () => {
   return (
@@ -18,6 +19,11 @@ const routes = () => {
         exact
         path={ROUTES.HOME_VIEW}
         render={props => <HomeView {...props} />}
+      />
+      <Route
+        exact
+        path={ROUTES.SIGNUP_VIEW}
+        render={props => <SignupView {...props} />}
       />
     </Switch>
   )

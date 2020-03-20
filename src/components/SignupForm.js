@@ -1,12 +1,9 @@
 import React from 'react'
 import { Form, Input, Button, Checkbox } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
-import { TwInput, Title, TwButton } from '../theme'
-import { SIGNUP_VIEW } from '../resources/routeNames'
+import { TwInput, Title, TwButton, Register } from '../theme'
 
-function LoginForm(props) {
-  const { routeTo } = props
-
+function Signup(props) {
   const onFinish = values => {
     console.log('Received values of form: ', values)
   }
@@ -15,7 +12,7 @@ function LoginForm(props) {
     <>
       <Title>Login</Title>
       <Form
-        name="normal_login"
+        name="Signup"
         className="login-form"
         initialValues={{
           remember: true,
@@ -37,6 +34,20 @@ function LoginForm(props) {
           />
         </Form.Item>
         <Form.Item
+          name="email"
+          rules={[
+            {
+              required: true,
+              message: 'Please input your Email!',
+            },
+          ]}
+        >
+          <TwInput
+            prefix={<UserOutlined className="site-form-item-icon" />}
+            placeholder="Email"
+          />
+        </Form.Item>
+        <Form.Item
           name="password"
           rules={[
             {
@@ -51,25 +62,35 @@ function LoginForm(props) {
             placeholder="Password"
           />
         </Form.Item>
-        <Form.Item>
-          <Form.Item name="remember" valuePropName="checked" noStyle>
-            <Checkbox>Remember me</Checkbox>
-          </Form.Item>
+        <Form.Item
+          name="rePassword"
+          rules={[
+            {
+              required: true,
+              message: 'Please input your Password!',
+            },
+          ]}
+        >
+          <TwInput
+            prefix={<LockOutlined className="site-form-item-icon" />}
+            type="password"
+            placeholder="Re-Enter Password"
+          />
         </Form.Item>
 
         <Form.Item>
           <TwButton
+            style={{ marginRight: 8 }}
             type="primary"
             htmlType="submit"
             className="login-form-button"
           >
-            Log in
-          </TwButton>{' '}
-          Or <a onClick={() => routeTo(SIGNUP_VIEW)}>register now!</a>
+            Register
+          </TwButton>
         </Form.Item>
       </Form>
     </>
   )
 }
 
-export default LoginForm
+export default Signup
