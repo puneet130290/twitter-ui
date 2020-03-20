@@ -17,7 +17,7 @@ function SignupView(props) {
             />
           </Col>
           <Col span={12}>
-            <SignupForm />
+            <SignupForm routeTo={props.history.push} />
           </Col>
         </Row>
       </LoginCard>

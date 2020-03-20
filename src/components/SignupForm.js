@@ -2,8 +2,10 @@ import React from 'react'
 import { Form, Input, Button, Checkbox } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
 import { TwInput, Title, TwButton, Register } from '../theme'
+import { LOGIN_VIEW } from '../resources/routeNames'
 
 function Signup(props) {
+  const { routeTo } = props
   const onFinish = values => {
     console.log('Received values of form: ', values)
   }
@@ -79,14 +81,17 @@ function Signup(props) {
         </Form.Item>
 
         <Form.Item>
-          <TwButton
+          <Button
+            size="large"
+            shape="round"
             style={{ marginRight: 8 }}
             type="primary"
             htmlType="submit"
             className="login-form-button"
           >
             Register
-          </TwButton>
+          </Button>{' '}
+          Or <a onClick={() => routeTo(LOGIN_VIEW)}>login</a>
         </Form.Item>
       </Form>
     </>

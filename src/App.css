@@ -41,6 +41,20 @@
   border-radius: 24px !important;
 }
 
+.tw-list-item {
+  cursor: pointer;
+  padding-left: 4px;
+}
+
+.ant-page-header {
+  padding: 0;
+  padding-bottom: 8px !important;
+}
+
+.tw-list-item:hover {
+  background-color: #f0f0f0;
+}
+
 #components-form-demo-normal-login .login-form {
   max-width: 300px;
 }

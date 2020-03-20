@@ -6,6 +6,7 @@ import * as ROUTES from './resources/routeNames'
 import LoginView from './views/LoginView'
 import HomeView from './views/HomeView'
 import SignupView from './views/SignupView'
+import TweetView from './views/TweetView'
 
 const routes = () => {
   return (
@@ -24,6 +25,11 @@ const routes = () => {
         exact
         path={ROUTES.SIGNUP_VIEW}
         render={props => <SignupView {...props} />}
+      />
+      <Route
+        exact
+        path={ROUTES.TWEET_VIEW}
+        render={props => <TweetView {...props} />}
       />
     </Switch>
   )

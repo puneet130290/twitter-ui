@@ -1,7 +1,12 @@
 import React from 'react'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 
-import { GET_TWEETS, GET_USERS } from '../resources/queries'
+import {
+  GET_TWEETS,
+  GET_USERS,
+  GET_TWEET,
+  FIND_TWEETS,
+} from '../resources/queries'
 import { CREATE_TWEET } from '../resources/mutations'
 
 //Query Hooks
@@ -15,8 +20,20 @@ export function useGetUsers() {
   return { loading, error, data }
 }
 
+export function useGetTweet(id) {
+  const { loading, error, data } = useQuery(GET_TWEET, { variables: { id } })
+  return { loading, error, data }
+}
+
+export function useFindTweets(filter) {
+  const { loading, error, data } = useQuery(FIND_TWEETS, {
+    variables: { filter },
+  })
+  return { loading, error, data }
+}
+
 //Mutation Hooks
-export function useCreateTweet() {
+export function useCreateTweet(reset) {
   const [createTweet, { loading, error, data }] = useMutation(CREATE_TWEET, {
     refetchQueries: () => {
       return [
@@ -25,10 +42,27 @@ export function useCreateTweet() {
         },
       ]
     },
+    onCompleted: () => reset(),
   })
 
-  const saveTweet = ({ userId, content }) =>
-    createTweet({ variables: { userId, content } })
+  const saveTweet = tweet => createTweet({ variables: { ...tweet } })
 
   return [saveTweet, { loading, error, data }]
+}
+
+export function useCreateComment(filter) {
+  const [createTweet, { loading, error, data }] = useMutation(CREATE_TWEET, {
+    refetchQueries: () => {
+      return [
+        {
+          query: FIND_TWEETS,
+          variables: { filter },
+        },
+      ]
+    },
+  })
+
+  const saveComment = comment => createTweet({ variables: { ...comment } })
+
+  return [saveComment, { loading, error, data }]
 }

@@ -58,13 +58,15 @@ function LoginForm(props) {
         </Form.Item>
 
         <Form.Item>
-          <TwButton
+          <Button
+            size="large"
+            shape="round"
             type="primary"
             htmlType="submit"
             className="login-form-button"
           >
             Log in
-          </TwButton>{' '}
+          </Button>{' '}
           Or <a onClick={() => routeTo(SIGNUP_VIEW)}>register now!</a>
         </Form.Item>
       </Form>

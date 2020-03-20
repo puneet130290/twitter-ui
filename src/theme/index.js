@@ -41,3 +41,8 @@ export const HomeContainer = styled(Card)`
   border-radius: 24px;
   margin: 32px 0;
 `
+
+export const LoaderContainer = styled.div`
+  width: 100%;
+  text-align: center;
+`
