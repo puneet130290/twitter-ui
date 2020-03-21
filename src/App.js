@@ -4,6 +4,7 @@ import './App.css'
 import './views/styles.css'
 import ApolloClient from 'apollo-boost'
 import { ApolloProvider } from '@apollo/react-hooks'
+import { TwitterContent } from './theme'
 
 import routes from './routes'
 
@@ -41,16 +42,7 @@ function App() {
   return (
     <ApolloProvider client={graphqlClient}>
       <Layout>
-        <Content
-          style={{
-            height: '100vh',
-            maxWidth: '720px',
-            minWidth: '720px',
-            margin: '0 auto',
-          }}
-        >
-          {routes()}
-        </Content>
+        <TwitterContent>{routes()}</TwitterContent>
       </Layout>
     </ApolloProvider>
   )

@@ -1,39 +1,23 @@
 import React, { useState } from 'react'
-import { HomeContainer, TweetButton, Title } from '../theme'
+import { HomeContainer } from '../theme'
 import Loader from '../components/Loader'
+import TweetBox from '../components/TweetBox'
+import TweetList from '../components/TweetList'
+import CommentBox from '../components/CommentBox'
+import { Tabs, List, Avatar, Divider } from 'antd'
 import {
-  Button,
-  Modal,
-  Tabs,
-  List,
-  Avatar,
-  Input,
-  Row,
-  Col,
-  Divider,
-} from 'antd'
-import { useGetTweets, useGetUsers, useCreateTweet } from '../hooks/dataSource'
+  useGetUsers,
+  useCreateTweet,
+  useGetAllTweets,
+} from '../hooks/dataSource'
+import { GET_ALL_TWEETS } from '../resources/queries'
 import moment from 'moment'
-import {
-  UserOutlined,
-  AppleOutlined,
-  AndroidOutlined,
-  MessageTwoTone,
-  LikeOutlined,
-  StarOutlined,
-} from '@ant-design/icons'
+import { TwitterOutlined, SmileFilled } from '@ant-design/icons'
 
 const { TabPane } = Tabs
-const { TextArea } = Input
-
-const IconText = ({ icon, text, onClick }) => (
-  <span>
-    {React.createElement(icon, { style: { marginRight: 8 } })}
-    {text}
-  </span>
-)
 
 function UserList(props) {
+  const { onUserTap } = props
   const { loading, error, data } = useGetUsers()
   if (loading) return <Loader />
   if (error) return <p>error...</p>
@@ -48,7 +32,7 @@ function UserList(props) {
             avatar={
               <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
             }
-            title={<a href="https://ant.design">{item.name}</a>}
+            title={<a onClick={() => onUserTap(item)}>{item.name}</a>}
             description={`@${item.handle}`}
           />
         </List.Item>
@@ -61,7 +45,16 @@ function FeedWall(props) {
   const { routeTo } = props
   const [visible, setVisibility] = useState(false)
   const [tweet, setTweet] = useState(null)
-  const { loading, error, data } = useGetTweets()
+  const [comment, setComment] = useState('')
+  const { loading, error, data } = useGetAllTweets()
+  const queriesToRefetch = [{ query: GET_ALL_TWEETS }]
+  const [
+    saveTweet,
+    { loading: savingComment, error: commentError, data: coment },
+  ] = useCreateTweet(queriesToRefetch, () => {
+    setVisibility(false)
+    setTweet('')
+  })
 
   const handleOk = e => setVisibility(false)
   const handleCancel = e => setVisibility(false)
@@ -72,153 +65,86 @@ function FeedWall(props) {
   const { tweets } = data
   return (
     <>
-      <Modal
-        title={null}
-        footer={null}
+      <CommentBox
+        onCommentSubmit={() =>
+          saveTweet({
+            commentedOn: tweet && tweet.id,
+            content: comment,
+            userId: '5e74bf508f6867428974036a',
+          })
+        }
+        onCommentChange={value => setComment(value)}
+        comment={comment}
+        loading={savingComment}
         visible={visible}
+        tweet={tweet}
         onOk={handleOk}
         onCancel={handleCancel}
-        // bodyStyle={{ height: '240px' }}
-      >
-        <Row style={{ marginBottom: 8 }}>
-          <Col span={4}>
-            <Avatar size={64} icon={<UserOutlined />} />
-          </Col>
-          <Col>
-            <Title style={{ margin: 0 }}>Puneet Saini</Title>
-            <p style={{ margin: 0, color: 'rgba(0, 0, 0, 0.45)' }}>
-              @puneet1302
-            </p>
-          </Col>
-        </Row>
-        <h1 style={{ margin: 0 }}>{tweet && tweet.content}</h1>
-        <p
-          style={{ margin: 0, marginBottom: 16, color: 'rgba(0, 0, 0, 0.45)' }}
-        >
-          {`${moment(tweet && tweet.createdAt).format('h:mm A')} . ${moment(
-            tweet && tweet.createdAt
-          ).format('MMM DD, YYYY')}`}
-        </p>
-        {/* <p>{tweet && tweet.content}</p> */}
-        <TweetArea
-          commentedOn={tweet && tweet.id}
-          toggleModal={() => setVisibility(false)}
-        />
-      </Modal>
-      {tweets.map(tweet => (
-        <div key={tweet.id}>
-          <Row style={{ marginBottom: 8 }}>
-            <Col span={2}>
-              <Avatar size="large" icon={<UserOutlined />} />
-            </Col>
-            <Col>
-              <div
-                className="tw-list-item"
-                onClick={() => routeTo(`/tweet/${tweet.id}`)}
-              >
-                <h3 style={{ margin: 0 }}>
-                  Puneet Saini{' '}
-                  <span style={{ color: 'rgba(0, 0, 0, 0.45)' }}>
-                    {`@puneet1302 . ${moment(tweet.createdAt).format(
-                      'h:mm A'
-                    )}`}
-                  </span>
-                </h3>
-                <p style={{ margin: 0 }}>{tweet.content}</p>
-              </div>
-              <div>
-                <span
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => {
-                    setTweet(tweet)
-                    setVisibility(true)
-                  }}
-                >
-                  <MessageTwoTone /> {'2'}
-                </span>
-              </div>
-            </Col>
-          </Row>
-          <Divider />
-        </div>
-      ))}
-    </>
-  )
-}
-
-function TweetArea(props) {
-  const { commentedOn, toggleModal } = props
-  const [tweet, setTweet] = useState('')
-  const [saveTweet, { loading, error, data }] = useCreateTweet(() => {
-    setTweet('')
-    toggleModal()
-  })
-  return (
-    <>
-      <Row>
-        <Col span="2">
-          <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-        </Col>
-        <Col>
-          <TextArea
-            value={tweet}
-            placeholder="What's happening..."
-            rows={4}
-            style={{ borderRadius: 8 }}
-            allowClear
-            onChange={e => setTweet(e.target.value)}
-          />
-        </Col>
-      </Row>
-      <div style={{ textAlign: 'right', paddingTop: 8 }}>
-        <Button
-          size="large"
-          shape="round"
-          disabled={!tweet}
-          loading={loading}
-          onClick={() =>
-            saveTweet({
-              userId: '5e74bf508f6867428974036a',
-              content: tweet,
-              commentedOn,
-            })
-          }
-          type="primary"
-        >
-          Tweet
-        </Button>
-      </div>
+      />
+      <TweetList
+        tweets={tweets}
+        onTap={tw => routeTo(`/tweet/${tw.id}`)}
+        onCommentIconClick={tw => {
+          setTweet(tw)
+          setVisibility(true)
+        }}
+      />
     </>
   )
 }
 
 function HomeView(props) {
+  const [tweet, setTweet] = useState('')
+  const queriesToRefetch = [{ query: GET_ALL_TWEETS }]
+  const [saveTweet, { loading, error, data }] = useCreateTweet(
+    queriesToRefetch,
+    () => setTweet('')
+  )
   return (
     <HomeContainer>
       <Tabs defaultActiveKey="1">
         <TabPane
           tab={
             <span>
-              <AppleOutlined />
+              <TwitterOutlined />
               Home
             </span>
           }
           key="1"
         >
-          <TweetArea />
-          <Divider dashed />
-          <FeedWall routeTo={props.history.push} />
+          <div
+            style={{
+              height: 'calc(100vh - 180px)',
+              overflow: 'auto',
+            }}
+          >
+            <TweetBox
+              loading={loading}
+              value={tweet}
+              onSubmit={() =>
+                saveTweet({
+                  userId: '5e74bf508f6867428974036a',
+                  content: tweet,
+                })
+              }
+              onTweetChange={value => setTweet(value)}
+            />
+            <Divider dashed />
+            <FeedWall routeTo={props.history.push} />
+          </div>
         </TabPane>
         <TabPane
           tab={
             <span>
-              <AndroidOutlined />
+              <SmileFilled />
               Users
             </span>
           }
           key="2"
         >
-          <UserList />
+          <UserList
+            onUserTap={user => props.history.push(`/user/${user.id}`)}
+          />
         </TabPane>
       </Tabs>
     </HomeContainer>

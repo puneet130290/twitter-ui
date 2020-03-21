@@ -1,6 +1,7 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
-import { Card, Input, Button } from 'antd'
+import { Card, Input, Button, Layout } from 'antd'
+const { Header, Content, Sider } = Layout
 
 const primaryColor = '#1890ff'
 
@@ -40,9 +41,21 @@ export const HomeContainer = styled(Card)`
   width: 100%;
   border-radius: 24px;
   margin: 32px 0;
+  height: calc(100vh - 64px);
 `
 
 export const LoaderContainer = styled.div`
   width: 100%;
   text-align: center;
+`
+
+export const UserDetails = styled.div`
+  text-align: center;
+`
+
+export const TwitterContent = styled(Content)`
+  max-width: 720px;
+  min-width: 720px;
+  margin: 0 auto;
+  height: 100vh;
 `
