@@ -1,10 +1,17 @@
 import React from 'react'
 import SignupForm from '../components/SignupForm'
-import { Row, Col, Card } from 'antd'
+import { Row, Col, Card, message } from 'antd'
+import { useSignup } from '../hooks/dataSource'
 
 import { LoginContainer, LoginCard } from '../theme'
 
 function SignupView(props) {
+  const [signupUser, { loading, error, data }] = useSignup(
+    () => message.success('Registration Successful! Please Login.'),
+    () => message.error('Something went wrong!'),
+    () => props.history.push('/login')
+  )
+
   return (
     <LoginContainer>
       <LoginCard>
@@ -17,7 +24,11 @@ function SignupView(props) {
             />
           </Col>
           <Col span={12}>
-            <SignupForm routeTo={props.history.push} />
+            <SignupForm
+              routeTo={props.history.push}
+              onSubmit={values => signupUser(values)}
+              loading={loading}
+            />
           </Col>
         </Row>
       </LoginCard>

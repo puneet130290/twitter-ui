@@ -59,3 +59,7 @@ export const TwitterContent = styled(Content)`
   margin: 0 auto;
   height: 100vh;
 `
+
+export const FormError = styled.span`
+  font-size: 0.6rem;
+`

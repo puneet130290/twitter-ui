@@ -11,7 +11,7 @@ import {
   GET_COMMENTS,
   GET_ALL_TWEETS,
 } from '../resources/queries'
-import { CREATE_TWEET } from '../resources/mutations'
+import { CREATE_TWEET, SIGNUP, LOGIN } from '../resources/mutations'
 
 //Query Hooks
 export function useGetTweets(filter) {
@@ -91,4 +91,24 @@ export function useCreateComment(filter) {
   const saveComment = comment => createTweet({ variables: { ...comment } })
 
   return [saveComment, { loading, error, data }]
+}
+
+export function useSignup(showInfo, showError, redirect) {
+  const [signup, { loading, error, data }] = useMutation(SIGNUP, {
+    onCompleted: () => {
+      redirect()
+      showInfo()
+    },
+    onError: () => showError(),
+  })
+  const signupUser = user => signup({ variables: { ...user } })
+  return [signupUser, { loading, error, data }]
+}
+
+export function useLogin(showError) {
+  const [login, { loading, error, data }] = useMutation(LOGIN, {
+    onError: () => showError(),
+  })
+  const loginUser = credentials => login({ variables: { ...credentials } })
+  return [loginUser, { loading, error, data }]
 }

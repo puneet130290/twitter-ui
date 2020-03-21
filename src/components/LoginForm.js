@@ -1,15 +1,14 @@
 import React from 'react'
 import { Form, Input, Button, Checkbox } from 'antd'
-import { UserOutlined, LockOutlined } from '@ant-design/icons'
+import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons'
 import { TwInput, Title, TwButton } from '../theme'
 import { SIGNUP_VIEW } from '../resources/routeNames'
+import { FormError } from '../theme'
 
 function LoginForm(props) {
-  const { routeTo } = props
+  const { routeTo, onSubmit, loading } = props
 
-  const onFinish = values => {
-    console.log('Received values of form: ', values)
-  }
+  const onFinish = values => onSubmit(values)
 
   return (
     <>
@@ -23,17 +22,22 @@ function LoginForm(props) {
         onFinish={onFinish}
       >
         <Form.Item
-          name="username"
+          name="email"
+          hasFeedback
           rules={[
             {
+              type: 'email',
+              message: <FormError>The input is not valid E-mail!</FormError>,
+            },
+            {
               required: true,
-              message: 'Please input your Username!',
+              message: <FormError>Please input your E-mail!</FormError>,
             },
           ]}
         >
           <TwInput
-            prefix={<UserOutlined className="site-form-item-icon" />}
-            placeholder="Username"
+            prefix={<MailOutlined style={{ marginTop: 8 }} />}
+            placeholder="Email"
           />
         </Form.Item>
         <Form.Item
@@ -41,22 +45,17 @@ function LoginForm(props) {
           rules={[
             {
               required: true,
-              message: 'Please input your Password!',
+              message: <FormError> Please input your Password!</FormError>,
             },
           ]}
+          hasFeedback
         >
           <TwInput
-            prefix={<LockOutlined className="site-form-item-icon" />}
+            prefix={<LockOutlined style={{ marginTop: 8 }} />}
             type="password"
             placeholder="Password"
           />
         </Form.Item>
-        <Form.Item>
-          <Form.Item name="remember" valuePropName="checked" noStyle>
-            <Checkbox>Remember me</Checkbox>
-          </Form.Item>
-        </Form.Item>
-
         <Form.Item>
           <Button
             size="large"
@@ -64,6 +63,7 @@ function LoginForm(props) {
             type="primary"
             htmlType="submit"
             className="login-form-button"
+            loading={loading}
           >
             Log in
           </Button>{' '}

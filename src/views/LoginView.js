@@ -1,10 +1,21 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import LoginForm from '../components/LoginForm'
-import { Row, Col, Card } from 'antd'
+import { Row, Col, Card, message } from 'antd'
+import { useLogin } from '../hooks/dataSource'
 
 import { LoginContainer, LoginCard } from '../theme'
 
 function LoginView(props) {
+  const [loginUser, { loading, error, data }] = useLogin(() =>
+    message.error('Something went wrong!')
+  )
+
+  useEffect(() => {
+    if (data && data.user) {
+      props.history.push('/home')
+    }
+  }, [data])
+
   return (
     <LoginContainer>
       <LoginCard>
@@ -17,7 +28,11 @@ function LoginView(props) {
             />
           </Col>
           <Col span={12}>
-            <LoginForm routeTo={props.history.push} />
+            <LoginForm
+              routeTo={props.history.push}
+              onSubmit={values => loginUser(values)}
+              loading={loading}
+            />
           </Col>
         </Row>
       </LoginCard>
