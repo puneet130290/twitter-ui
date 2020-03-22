@@ -58,3 +58,14 @@ export const GET_ALL_TWEETS = gql`
     tweets: tweets
   }
 `
+
+export const GET_CURRENT_USER = gql`
+  query GetCurrentUser {
+    user: currentUser {
+      id
+      name
+      email
+      handle
+    }
+  }
+`

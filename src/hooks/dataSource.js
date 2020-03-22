@@ -1,5 +1,5 @@
 import React from 'react'
-import { useQuery, useMutation } from '@apollo/react-hooks'
+import { useQuery, useMutation, useLazyQuery } from '@apollo/react-hooks'
 
 import {
   GET_TWEETS,
@@ -10,6 +10,7 @@ import {
   GET_USER_TWEETS,
   GET_COMMENTS,
   GET_ALL_TWEETS,
+  GET_CURRENT_USER,
 } from '../resources/queries'
 import { CREATE_TWEET, SIGNUP, LOGIN } from '../resources/mutations'
 
@@ -60,6 +61,11 @@ export function useGetComments(tweetId) {
 export function useGetAllTweets() {
   const { loading, error, data } = useQuery(GET_ALL_TWEETS)
   return { loading, error, data }
+}
+
+export function useGetCurrentUser() {
+  const [currentUser, { loading, error, data }] = useLazyQuery(GET_CURRENT_USER)
+  return [currentUser, { loading, error, data }]
 }
 
 //Mutation Hooks

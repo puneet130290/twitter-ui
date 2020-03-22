@@ -13,7 +13,7 @@ export const LoginContainer = styled.div`
 export const LoginCard = styled(Card)`
   position: absolute;
   width: 640px;
-  top: 30%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   border-radius: 24px;

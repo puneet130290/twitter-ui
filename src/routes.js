@@ -9,7 +9,7 @@ import SignupView from './views/SignupView'
 import TweetView from './views/TweetView'
 import UserProfileView from './views/UserProfileView'
 
-const routes = () => {
+export const publicRoutes = () => {
   return (
     <Switch>
       <Route
@@ -19,13 +19,26 @@ const routes = () => {
       />
       <Route
         exact
-        path={ROUTES.HOME_VIEW}
-        render={props => <HomeView {...props} />}
+        path={ROUTES.SIGNUP_VIEW}
+        render={props => <SignupView {...props} />}
       />
       <Route
         exact
-        path={ROUTES.SIGNUP_VIEW}
+        path="*"
         render={props => <SignupView {...props} />}
+        render={props => <Redirect to={{ pathname: ROUTES.LOGIN_VIEW }} />}
+      />
+    </Switch>
+  )
+}
+
+const routes = () => {
+  return (
+    <Switch>
+      <Route
+        exact
+        path={ROUTES.HOME_VIEW}
+        render={props => <HomeView {...props} />}
       />
       <Route
         exact
@@ -37,6 +50,7 @@ const routes = () => {
         path={ROUTES.USER_PROFILE_VIEW}
         render={props => <UserProfileView {...props} />}
       />
+      <Route path="*" render={props => <Redirect to={ROUTES.HOME_VIEW} />} />
     </Switch>
   )
 }

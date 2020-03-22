@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react'
 import LoginForm from '../components/LoginForm'
 import { Row, Col, Card, message } from 'antd'
+import { Redirect } from 'react-router-dom'
+import { HOME_VIEW } from '../resources/routeNames'
 import { useLogin } from '../hooks/dataSource'
 
 import { LoginContainer, LoginCard } from '../theme'
@@ -9,12 +11,6 @@ function LoginView(props) {
   const [loginUser, { loading, error, data }] = useLogin(() =>
     message.error('Something went wrong!')
   )
-
-  useEffect(() => {
-    if (data && data.user) {
-      props.history.push('/home')
-    }
-  }, [data])
 
   return (
     <LoginContainer>
