@@ -3,12 +3,20 @@ import ReactDOM from 'react-dom'
 import './index.css'
 import 'antd/dist/antd.css'
 import App from './App'
+import ApolloClient from 'apollo-boost'
+import { ApolloProvider } from '@apollo/react-hooks'
 import * as serviceWorker from './serviceWorker'
 import { BrowserRouter as Router, Redirect, Route } from 'react-router-dom'
 
+const graphqlClient = new ApolloClient({
+  uri: `${process.env.REACT_APP_BACKEND_SERVER}/graphql`,
+})
+
 ReactDOM.render(
   <Router>
-    <App />
+    <ApolloProvider client={graphqlClient}>
+      <App />
+    </ApolloProvider>
   </Router>,
   document.getElementById('root')
 )

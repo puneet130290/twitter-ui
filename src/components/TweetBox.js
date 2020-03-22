@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button, Avatar, Input, Row, Col } from 'antd'
+import { UserOutlined } from '@ant-design/icons'
 
 const { TextArea } = Input
 
@@ -8,8 +9,8 @@ function TweetBox(props) {
   return (
     <>
       <Row>
-        <Col span="2">
-          <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+        <Col span="3">
+          <Avatar size={48} icon={<UserOutlined />} />
         </Col>
         <Col>
           <TextArea

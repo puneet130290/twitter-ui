@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { PageHeader, Divider } from 'antd'
 
-import { HomeContainer } from '../theme'
+import { HomeContainer, TweetContainer } from '../theme'
 import {
   useGetTweet,
   useCreateTweet,
@@ -44,7 +44,7 @@ function CommentList(props) {
           saveTweet({
             commentedOn: tweet && tweet.id,
             content: comment,
-            userId: '5e74bf508f6867428974036a',
+            userId: localStorage.getItem('twUserId'),
           })
         }
         onCommentChange={value => setComment(value)}
@@ -101,7 +101,7 @@ function TweetView(props) {
           saveTweet({
             commentedOn: props.match.params.id,
             content: comment,
-            userId: '5e74bf508f6867428974036a',
+            userId: localStorage.getItem('twUserId'),
           })
         }
         onCommentChange={value => setComment(value)}
@@ -118,20 +118,21 @@ function TweetView(props) {
         title="Tweet"
       />
       <Divider style={{ margin: 0, marginBottom: 16 }} />
-      <div style={{ height: 'calc(100vh - 180px)', overflow: 'auto' }}>
+      <TweetContainer>
         <Tweet
           tweet={userTweet}
           onCommentIconClick={tw => {
             setTweet(tw)
             setVisibility(true)
           }}
+          onUserClick={id => props.history.push(`/user/${id}`)}
         />
         <Divider dashed />
         <CommentList
           tweetId={props.match.params.id}
           routeTo={props.history.push}
         />
-      </div>
+      </TweetContainer>
     </HomeContainer>
   )
 }

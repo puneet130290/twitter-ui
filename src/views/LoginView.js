@@ -12,6 +12,18 @@ function LoginView(props) {
     message.error('Something went wrong!')
   )
 
+  if (data && data.user) {
+    const {
+      user: { id, name, email, handle },
+    } = data
+    localStorage.setItem('twUserId', id)
+    localStorage.setItem('twUserHandle', handle)
+    localStorage.setItem('twUserEmail', email)
+    localStorage.setItem('twUserName', name)
+
+    return <Redirect to={{ pathname: '/home' }} />
+  }
+
   return (
     <LoginContainer>
       <LoginCard>

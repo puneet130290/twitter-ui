@@ -45,7 +45,7 @@ function UserTweets(props) {
           saveTweet({
             commentedOn: tweet && tweet.id,
             content: comment,
-            userId: '5e74bf508f6867428974036a',
+            userId: localStorage.getItem('twUserId'),
           })
         }
         onCommentChange={value => setComment(value)}

@@ -42,6 +42,7 @@ export const HomeContainer = styled(Card)`
   border-radius: 24px;
   margin: 32px 0;
   height: calc(100vh - 64px);
+  position: relative;
 `
 
 export const LoaderContainer = styled.div`
@@ -62,4 +63,21 @@ export const TwitterContent = styled(Content)`
 
 export const FormError = styled.span`
   font-size: 0.6rem;
+`
+
+export const TopPanel = styled.span`
+  position: absolute;
+  right: 24px;
+  top: 32px;
+  z-index: 1;
+`
+
+export const TweetContainer = styled.div`
+  height: calc(100vh - 180px);
+  overflow: auto;
+`
+
+export const UserTitle = styled.a`
+  margin: 0px;
+  font-size: 1.2rem;
 `

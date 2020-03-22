@@ -55,4 +55,36 @@ const routes = () => {
   )
 }
 
+export const testRoutes = () => {
+  return (
+    <Switch>
+      <Route
+        exact
+        path={ROUTES.HOME_VIEW}
+        render={props => <HomeView {...props} />}
+      />
+      <Route
+        exact
+        path={ROUTES.TWEET_VIEW}
+        render={props => <TweetView {...props} />}
+      />
+      <Route
+        exact
+        path={ROUTES.USER_PROFILE_VIEW}
+        render={props => <UserProfileView {...props} />}
+      />
+      <Route
+        exact
+        path={ROUTES.LOGIN_VIEW}
+        render={props => <LoginView {...props} />}
+      />
+      <Route
+        exact
+        path={ROUTES.SIGNUP_VIEW}
+        render={props => <SignupView {...props} />}
+      />
+    </Switch>
+  )
+}
+
 export default routes

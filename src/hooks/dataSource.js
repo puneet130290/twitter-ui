@@ -12,7 +12,7 @@ import {
   GET_ALL_TWEETS,
   GET_CURRENT_USER,
 } from '../resources/queries'
-import { CREATE_TWEET, SIGNUP, LOGIN } from '../resources/mutations'
+import { CREATE_TWEET, SIGNUP, LOGIN, LOGOUT } from '../resources/mutations'
 
 //Query Hooks
 export function useGetTweets(filter) {
@@ -64,7 +64,9 @@ export function useGetAllTweets() {
 }
 
 export function useGetCurrentUser() {
-  const [currentUser, { loading, error, data }] = useLazyQuery(GET_CURRENT_USER)
+  const [currentUser, { loading, error, data }] = useLazyQuery(
+    GET_CURRENT_USER
+  )
   return [currentUser, { loading, error, data }]
 }
 
@@ -117,4 +119,14 @@ export function useLogin(showError) {
   })
   const loginUser = credentials => login({ variables: { ...credentials } })
   return [loginUser, { loading, error, data }]
+}
+
+export function useLogout(clearData, redirect) {
+  const [logout, { loading, error, data }] = useMutation(LOGOUT, {
+    onCompleted: () => {
+      clearData()
+      redirect()
+    },
+  })
+  return [logout, { loading, error, data }]
 }

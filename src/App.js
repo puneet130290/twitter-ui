@@ -1,12 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import logo from './logo.svg'
 import './App.css'
 import './views/styles.css'
-import ApolloClient from 'apollo-boost'
-import { ApolloProvider } from '@apollo/react-hooks'
 import { TwitterContent } from './theme'
+import { withRouter } from 'react-router-dom'
 
-import routes, { publicRoutes } from './routes'
+import routes, { publicRoutes, testRoutes } from './routes'
+import { useGetCurrentUser } from './hooks/dataSource'
 
 import { Layout, Menu, Breadcrumb } from 'antd'
 import {
@@ -18,21 +18,20 @@ import {
 const { SubMenu } = Menu
 const { Header, Content, Sider } = Layout
 
-const graphqlClient = new ApolloClient({
-  uri: `${process.env.REACT_APP_BACKEND_SERVER}/graphql`,
-})
+function App(props) {
+  const [isAuth, setAuth] = useState(false)
+  const [currentUser, { loading, error, data }] = useGetCurrentUser()
 
-function App() {
-  const [user, setUser] = useState(null)
+  useEffect(() => {
+    console.log('check auth status here')
+  }, [props.location.pathname])
   return (
-    <ApolloProvider client={graphqlClient}>
-      <Layout>
-        <TwitterContent>
-          {!!localStorage.getItem('twUserId') ? routes() : publicRoutes()}
-        </TwitterContent>
-      </Layout>
-    </ApolloProvider>
+    <Layout>
+      <TwitterContent>
+        {!!localStorage.getItem('twUserId') ? routes() : publicRoutes()}
+      </TwitterContent>
+    </Layout>
   )
 }
 
-export default App
+export default withRouter(App)

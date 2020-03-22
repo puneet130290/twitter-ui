@@ -1,18 +1,24 @@
 import React, { useState } from 'react'
-import { HomeContainer } from '../theme'
+import { HomeContainer, TopPanel } from '../theme'
 import Loader from '../components/Loader'
 import TweetBox from '../components/TweetBox'
 import TweetList from '../components/TweetList'
 import CommentBox from '../components/CommentBox'
-import { Tabs, List, Avatar, Divider } from 'antd'
+import { UserOutlined } from '@ant-design/icons'
+import { Tabs, List, Avatar, Divider, Button } from 'antd'
 import {
   useGetUsers,
   useCreateTweet,
   useGetAllTweets,
+  useLogout,
 } from '../hooks/dataSource'
 import { GET_ALL_TWEETS } from '../resources/queries'
 import moment from 'moment'
-import { TwitterOutlined, SmileFilled } from '@ant-design/icons'
+import {
+  TwitterOutlined,
+  SmileFilled,
+  PoweroffOutlined,
+} from '@ant-design/icons'
 
 const { TabPane } = Tabs
 
@@ -29,9 +35,7 @@ function UserList(props) {
       renderItem={item => (
         <List.Item>
           <List.Item.Meta
-            avatar={
-              <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-            }
+            avatar={<Avatar icon={<UserOutlined />} />}
             title={<a onClick={() => onUserTap(item)}>{item.name}</a>}
             description={`@${item.handle}`}
           />
@@ -70,7 +74,7 @@ function FeedWall(props) {
           saveTweet({
             commentedOn: tweet && tweet.id,
             content: comment,
-            userId: '5e74bf508f6867428974036a',
+            userId: localStorage.getItem('twUserId'),
           })
         }
         onCommentChange={value => setComment(value)}
@@ -95,13 +99,33 @@ function FeedWall(props) {
 
 function HomeView(props) {
   const [tweet, setTweet] = useState('')
-  const queriesToRefetch = [{ query: GET_ALL_TWEETS }]
-  const [saveTweet, { loading, error, data }] = useCreateTweet(
-    queriesToRefetch,
-    () => setTweet('')
+  const [logout, { loading: logginOut, error: logoutErr }] = useLogout(
+    () => localStorage.clear(),
+    () => props.history.push('/login')
   )
+  const queriesToRefetch = [{ query: GET_ALL_TWEETS }]
+  const [
+    saveTweet,
+    { loading, error, data },
+  ] = useCreateTweet(queriesToRefetch, () => setTweet(''))
   return (
     <HomeContainer>
+      <TopPanel>
+        <a
+          onClick={() =>
+            props.history.push(`/user/${localStorage.getItem('twUserId')}`)
+          }
+        >
+          {localStorage.getItem('twUserName')}{' '}
+        </a>
+        <Button
+          type="link"
+          danger
+          icon={<PoweroffOutlined />}
+          loading={logginOut}
+          onClick={() => logout()}
+        />
+      </TopPanel>
       <Tabs defaultActiveKey="1">
         <TabPane
           tab={
@@ -123,7 +147,7 @@ function HomeView(props) {
               value={tweet}
               onSubmit={() =>
                 saveTweet({
-                  userId: '5e74bf508f6867428974036a',
+                  userId: localStorage.getItem('twUserId'),
                   content: tweet,
                 })
               }
