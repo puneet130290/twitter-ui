@@ -9,10 +9,10 @@ function TweetBox(props) {
   return (
     <>
       <Row>
-        <Col span="3">
+        <Col span={3}>
           <Avatar size={48} icon={<UserOutlined />} />
         </Col>
-        <Col>
+        <Col span={21}>
           <TextArea
             value={value}
             placeholder="What's happening..."
